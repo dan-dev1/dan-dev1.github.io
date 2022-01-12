@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		* {
+			font-family: sans-serif;
+		}
+		.letter {
+			display: inline-block;
+			padding: 10px;
+			margin: 5px;
+			width: 20px;
+			height: 20px;
+			text-align: center;
+			font-weight: bold;
+			font-size: 14pt;
+			border: 0.5px solid;
+		}
+	</style>
+	<title>wwordle</title>
+</head>
+
+<body>
+	<div id="game"></div>
+	<button onclick="reset()">Reset</button>
+	<h4>Letters not in word:</h4>
+	<div id="nopelist"></div>
+
+	<script src="5letwords.js"></script>
+	<script>
+
+		var word_length = 5;
+		var no_words = 6;
+
+		var word = "";
+
+		function reset() {
+			choose_word();
+			draw_board();
+			move_cursor();
+			document.getElementById("nopelist").innerHTML = "";
+		}
+
+		function draw_board() {
+			var inputs = "";
+			for (var i = 0; i < no_words; i++) {
+
+				var disabled = "";
+				if (i != 0) {
+					disabled = "disabled=true";
+				}
+
+				inputs += "<div class='word' id='word" + i.toString() + "'>";
+				for (var j = 0; j < word_length; j++) {
+					inputs += "<input type='text' class='letter' id='w" + i.toString() + "l" + j.toString() + "' maxlength=1 " + disabled + ">";
+				}
+				inputs += "</div>";
+			}
+			document.getElementById("game").innerHTML = inputs;
+		}
+		draw_board();
+
+		function choose_word() {
+			var list_items = list.split("\n");
+			word = list_items[Math.floor(Math.random() * list_items.length)].toUpperCase();
+			console.log("word is " + word);
+		}
+		choose_word();
+
+		function move_cursor() {
+			var inps = document.getElementsByClassName("letter");
+			for (var i=0; i<inps.length; i++) {
+				inps[i].addEventListener("keyup", function(e) {
+					e.target.value = e.target.value.toUpperCase();
+
+					var current_word = parseInt(e.target.id.split("w")[1].split("l")[0]);
+					var current_let = parseInt(e.target.id.split("l")[1]);
+
+					if (e.code == "Backspace") {
+						document.getElementById("w" + current_word.toString() + "l" + (current_let - 1).toString()).focus();
+						return;
+					}
+
+					if (current_let == word_length - 1) {
+						check_word(current_word);
+						return;
+					}
+
+					var future_let = "";
+
+					if (current_let + 1 < word_length) {
+						future_let = current_let + 1;
+					}
+
+					document.getElementById("w" + current_word.toString() + "l" + future_let.toString()).focus();
+				});
+			}
+		}
+		move_cursor();
+
+		function check_word(word_no) {
+			for (var i=0; i<word_length; i++) {
+				var letter_elem =document.getElementById("w" + word_no.toString() + "l" + i.toString());
+				var letter = letter_elem.value;
+				if (word.indexOf(letter) != -1) {
+					if (word.indexOf(letter) == i) {
+						letter_elem.style.backgroundColor = "green";
+						letter_elem.style.color = "white";
+					}
+					else {
+						letter_elem.style.backgroundColor = "orange";
+						letter_elem.style.color = "white";
+					}
+				}
+				else {
+					var nopes_elem = document.getElementById("nopelist");
+					if (nopes_elem.innerHTML.indexOf(letter) == -1) {
+						nopes_elem.innerHTML += letter;
+					}
+				}
+			}
+
+			next_word(word_no);
+		}
+
+		function next_word(word_no) {
+			var letters = document.getElementsByClassName("letter");
+			for (var i=0; i<letters.length; i++) {
+				letters[i].disabled = "true";
+			}
+
+			for (var j=0; j<word_length; j++) {
+				document.getElementById("w" + (word_no+1).toString() + "l" + j.toString()).disabled = false;
+			}
+		}
+
+
+	</script>
+
+</body>
+
+</html>
