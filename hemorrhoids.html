@@ -133,6 +133,11 @@
 		}
 
 		function next_word(word_no) {
+			if (word_no == no_words - 1) {
+				alert("wword wwas " + word);
+				return;
+			}
+
 			var letters = document.getElementsByClassName("letter");
 			for (var i=0; i<letters.length; i++) {
 				letters[i].disabled = "true";
