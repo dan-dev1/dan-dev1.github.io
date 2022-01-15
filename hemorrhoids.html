@@ -85,7 +85,7 @@
 					var current_word = parseInt(e.target.id.split("w")[1].split("l")[0]);
 					var current_let = parseInt(e.target.id.split("l")[1]);
 
-					if (e.code == "Backspace") {
+					if (e.keyCode == 8 || e.keyCode == 229) {
 						document.getElementById("w" + current_word.toString() + "l" + (current_let - 1).toString()).focus();
 						return;
 					}
