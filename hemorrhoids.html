@@ -65,8 +65,6 @@
 	<div id="game"></div>
 	<button onclick="reset()">Reset</button>
 	<div id="keyboard"></div>
-	<h4>Letters not in word:</h4>
-	<div id="nopelist"></div>
 
 	<script src="5letwords.js"></script>
 	<script>
@@ -110,7 +108,6 @@
 			draw_board();
 			draw_keyboard();
 			move_cursor();
-			document.getElementById("nopelist").innerHTML = "";
 		}
 
 		function draw_board() {
@@ -170,7 +167,7 @@
 			document.getElementById("back").addEventListener("click", function (e) {
 				document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
 				move_position(-1);
-
+				
 				console.log(current_word, current_word_letter);
 			});
 			document.getElementById("enter").addEventListener("click", function (e) {
@@ -228,10 +225,19 @@
 			return false;
 		}
 
+		function find_key(letter) {
+			var lets = document.getElementsByClassName("keyb-let");
+			for (var i=0; i<lets.length; i++) {
+				if (lets[i].innerHTML.toUpperCase() == letter.toUpperCase()) {
+					return lets[i];
+				}
+			}
+		}
+
 		function check_word(word_no) {
 
 			if (!word_exists(word_no)) {
-				alert("word doesn't exist");
+				alert("wword doesn't exist");
 				return;
 			}
 
@@ -246,17 +252,21 @@
 					if (word.indexOf(letter) == i) {
 						letter_elem.style.backgroundColor = "green";
 						letter_elem.style.color = "white";
+
+						find_key(letter).style.backgroundColor = "green";
+						find_key(letter).style.color = "white";
 					}
 					else {
 						letter_elem.style.backgroundColor = "orange";
 						letter_elem.style.color = "white";
+
+						find_key(letter).style.backgroundColor = "orange";
+						find_key(letter).style.color = "white";
 					}
 				}
 				else {
-					var nopes_elem = document.getElementById("nopelist");
-					if (nopes_elem.innerHTML.indexOf(letter) == -1) {
-						nopes_elem.innerHTML += letter;
-					}
+					find_key(letter).style.backgroundColor = "grey";
+					find_key(letter).style.color = "white";
 				}
 			}
 
