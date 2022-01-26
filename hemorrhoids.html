@@ -75,11 +75,37 @@
 		var no_words = 6;
 
 		var current_letter = 0;
+		var current_word = 0;
+		var current_word_letter = 0;
 
 		var word = "";
 
+		function move_position(spaces) {
+			if (current_letter + spaces < 0) {
+				current_letter = 0;
+				current_word = 0;
+				current_word_letter = 0;
+				return;
+			}
+
+			if (current_word_letter + spaces >= word_length) {
+				return;
+			}
+
+			if (current_word_letter + spaces < 0) {
+				return;
+			}
+
+			current_letter += spaces;
+			current_word = Math.floor(current_letter / word_length);
+			current_word_letter = current_letter % word_length;
+		}
+
 		function reset() {
 			current_letter = 0;
+			current_word = 0;
+			current_word_letter = 0;
+
 			choose_word();
 			draw_board();
 			draw_keyboard();
@@ -130,31 +156,25 @@
 			document.getElementById("keyboard").innerHTML = retval;
 
 			var lets = document.getElementsByClassName("keyb-let");
-			var word_number;
-			var letter_number;
 
 			for (var i = 0; i < lets.length; i++) {
 				lets[i].addEventListener("click", function (e) {
-					console.log("setting ", word_number, letter_number);
-					word_number = Math.floor(current_letter / word_length);
-					letter_number = current_letter % word_length;
+					console.log("setting ", current_word, current_word_letter);
 
-					document.getElementById("w" + word_number.toString() + "l" + letter_number.toString()).innerHTML = e.target.innerHTML;
-					console.log(e.target.innerHTML, word_number, letter_number);
-					current_letter++;
+					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = e.target.innerHTML;
+					console.log(e.target.innerHTML, current_word, current_word_letter);
+					move_position(1);
 				});
 			}
 
 			document.getElementById("back").addEventListener("click", function (e) {
-				current_letter--;
-				word_number = Math.floor(current_letter / word_length);
-				letter_number = current_letter % word_length;
+				document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
+				move_position(-1);
 
-				console.log(word_number, letter_number);
-				document.getElementById("w" + word_number.toString() + "l" + letter_number.toString()).innerHTML = "";
+				console.log(current_word, current_word_letter);
 			});
 			document.getElementById("enter").addEventListener("click", function (e) {
-				check_word(word_number);
+				check_word(current_word);
 			});
 		}
 
@@ -214,6 +234,10 @@
 				alert("word doesn't exist");
 				return;
 			}
+
+			current_letter++;
+			current_word++;
+			current_word_letter = 0;
 
 			for (var i = 0; i < word_length; i++) {
 				var letter_elem = document.getElementById("w" + word_no.toString() + "l" + i.toString());
