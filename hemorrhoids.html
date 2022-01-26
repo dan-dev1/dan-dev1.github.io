@@ -182,38 +182,6 @@
 		}
 		choose_word();
 
-		function move_cursor() {
-			var inps = document.getElementsByClassName("letter");
-			for (var i = 0; i < inps.length; i++) {
-				inps[i].addEventListener("keyup", function (e) {
-					alert(e.keyCode);
-					e.target.value = e.target.value.toUpperCase();
-
-					var current_word = parseInt(e.target.id.split("w")[1].split("l")[0]);
-					var current_let = parseInt(e.target.id.split("l")[1]);
-
-					if (e.keyCode == 8 || e.keyCode == 229) {
-						document.getElementById("w" + current_word.toString() + "l" + (current_let - 1).toString()).focus();
-						return;
-					}
-
-					if (current_let == word_length - 1) {
-						check_word(current_word);
-						return;
-					}
-
-					var future_let = "";
-
-					if (current_let + 1 < word_length) {
-						future_let = current_let + 1;
-					}
-
-					document.getElementById("w" + current_word.toString() + "l" + future_let.toString()).focus();
-				});
-			}
-		}
-		move_cursor();
-
 		function word_exists(word_no) {
 			var complete_word = "";
 			for (var i = 0; i < word_length; i++) {
@@ -270,25 +238,11 @@
 				}
 			}
 
-			next_word(word_no);
-		}
-
-		function next_word(word_no) {
-			if (word_no == no_words - 1) {
+			if (word_no == no_word - 1) {
 				alert("wword wwas " + word);
 				return;
 			}
-
-			var letters = document.getElementsByClassName("letter");
-			for (var i = 0; i < letters.length; i++) {
-				letters[i].disabled = "true";
-			}
-
-			for (var j = 0; j < word_length; j++) {
-				document.getElementById("w" + (word_no + 1).toString() + "l" + j.toString()).disabled = false;
-			}
 		}
-
 
 	</script>
 
