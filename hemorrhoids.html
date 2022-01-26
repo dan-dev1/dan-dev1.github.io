@@ -82,6 +82,7 @@
 			var inps = document.getElementsByClassName("letter");
 			for (var i=0; i<inps.length; i++) {
 				inps[i].addEventListener("keyup", function(e) {
+					alert(e.keyCode);
 					e.target.value = e.target.value.toUpperCase();
 
 					var current_word = parseInt(e.target.id.split("w")[1].split("l")[0]);
@@ -111,7 +112,7 @@
 
 		function check_word(word_no) {
 			for (var i=0; i<word_length; i++) {
-				var letter_elem =document.getElementById("w" + word_no.toString() + "l" + i.toString());
+				var letter_elem = document.getElementById("w" + word_no.toString() + "l" + i.toString());
 				var letter = letter_elem.value;
 				if (word.indexOf(letter) != -1) {
 					if (word.indexOf(letter) == i) {
