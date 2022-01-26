@@ -55,15 +55,17 @@
 			for (var i = 0; i < no_words; i++) {
 
 				var disabled = "";
+				var button = "<button>Check</button>";
 				if (i != 0) {
 					disabled = "disabled=true";
+					button = "";
 				}
 
 				inputs += "<div class='word' id='word" + i.toString() + "'>";
 				for (var j = 0; j < word_length; j++) {
 					inputs += "<input type='text' class='letter' id='w" + i.toString() + "l" + j.toString() + "' maxlength=1 " + disabled + ">";
 				}
-				inputs += "</div>";
+				inputs += button + "</div>";
 			}
 			document.getElementById("game").innerHTML = inputs;
 		}
