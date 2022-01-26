@@ -9,6 +9,7 @@
 		* {
 			font-family: sans-serif;
 		}
+
 		.letter {
 			display: inline-block;
 			padding: 10px;
@@ -19,10 +20,41 @@
 			font-weight: bold;
 			font-size: 14pt;
 			border: 0.5px solid;
+			vertical-align: top;
 		}
+
 		#game {
 			display: block;
 			text-align: center;
+		}
+
+		#keyboard {
+			width: 100%;
+			max-width: 600px;
+			margin: auto;
+		}
+
+		.keyb-tile {
+			display: inline-block;
+			width: 20px;
+			padding: 20px 10px;
+			border: 1px solid grey;
+			vertical-align: middle;
+			margin: 5px;
+			user-select: none;
+			border-radius: 5px;
+		}
+
+		.keyb-row {
+			display: block;
+			text-align: center;
+		}
+
+		.keyb-but {
+			background-color: black;
+			color: white;
+			font-weight: bold;
+			width: 50px;
 		}
 	</style>
 	<title>wwordle</title>
@@ -32,6 +64,7 @@
 	<h1>wwordle</h1>
 	<div id="game"></div>
 	<button onclick="reset()">Reset</button>
+	<div id="keyboard"></div>
 	<h4>Letters not in word:</h4>
 	<div id="nopelist"></div>
 
@@ -41,11 +74,15 @@
 		var word_length = 5;
 		var no_words = 6;
 
+		var current_letter = 0;
+
 		var word = "";
 
 		function reset() {
+			current_letter = 0;
 			choose_word();
 			draw_board();
+			draw_keyboard();
 			move_cursor();
 			document.getElementById("nopelist").innerHTML = "";
 		}
@@ -54,22 +91,72 @@
 			var inputs = "";
 			for (var i = 0; i < no_words; i++) {
 
-				var disabled = "";
-				var button = "<button>Check</button>";
-				if (i != 0) {
-					disabled = "disabled=true";
-					button = "";
-				}
-
 				inputs += "<div class='word' id='word" + i.toString() + "'>";
 				for (var j = 0; j < word_length; j++) {
-					inputs += "<input type='text' class='letter' id='w" + i.toString() + "l" + j.toString() + "' maxlength=1 " + disabled + ">";
+					inputs += "<div type='text' class='letter' id='w" + i.toString() + "l" + j.toString() + "'></div>";
 				}
-				inputs += button + "</div>";
+				inputs += "</div>";
 			}
 			document.getElementById("game").innerHTML = inputs;
+
+			draw_keyboard();
 		}
 		draw_board();
+
+		function draw_keyboard() {
+			var retval = "";
+			for (var i = 0; i < keyboard.length; i++) {
+				var row = "<div class='keyb-row'>";
+
+				for (var j = 0; j < keyboard[i].length; j++) {
+
+					if (i == 2 && j == 0 || i == 2 && j == 8) {
+						var type = "";
+						if (j == 0) {
+							type = "back";
+						}
+						else {
+							type = "enter";
+						}
+						row += "<div class='keyb-tile keyb-but' id='" + type + "'>" + keyboard[i][j] + "</div>";
+						continue;
+					}
+					row += "<div class='keyb-tile keyb-let'>" + keyboard[i][j] + "</div>";
+				}
+
+				retval += row + "</div>";
+			}
+
+			document.getElementById("keyboard").innerHTML = retval;
+
+			var lets = document.getElementsByClassName("keyb-let");
+			var word_number;
+			var letter_number;
+
+			for (var i = 0; i < lets.length; i++) {
+				lets[i].addEventListener("click", function (e) {
+					console.log("setting ", word_number, letter_number);
+					word_number = Math.floor(current_letter / word_length);
+					letter_number = current_letter % word_length;
+
+					document.getElementById("w" + word_number.toString() + "l" + letter_number.toString()).innerHTML = e.target.innerHTML;
+					console.log(e.target.innerHTML, word_number, letter_number);
+					current_letter++;
+				});
+			}
+
+			document.getElementById("back").addEventListener("click", function (e) {
+				current_letter--;
+				word_number = Math.floor(current_letter / word_length);
+				letter_number = current_letter % word_length;
+
+				console.log(word_number, letter_number);
+				document.getElementById("w" + word_number.toString() + "l" + letter_number.toString()).innerHTML = "";
+			});
+			document.getElementById("enter").addEventListener("click", function (e) {
+				check_word(word_number);
+			});
+		}
 
 		function choose_word() {
 			var list_items = list.split("\n");
@@ -80,8 +167,8 @@
 
 		function move_cursor() {
 			var inps = document.getElementsByClassName("letter");
-			for (var i=0; i<inps.length; i++) {
-				inps[i].addEventListener("keyup", function(e) {
+			for (var i = 0; i < inps.length; i++) {
+				inps[i].addEventListener("keyup", function (e) {
 					alert(e.keyCode);
 					e.target.value = e.target.value.toUpperCase();
 
@@ -110,10 +197,27 @@
 		}
 		move_cursor();
 
+		function word_exists(word_no) {
+			var complete_word = "";
+			for (var i = 0; i < word_length; i++) {
+				complete_word += document.getElementById("w" + word_no.toString() + "l" + i.toString()).innerHTML;
+			}
+			if (list.split("\n").includes(complete_word.toLowerCase())) {
+				return true;
+			}
+			return false;
+		}
+
 		function check_word(word_no) {
-			for (var i=0; i<word_length; i++) {
+
+			if (!word_exists(word_no)) {
+				alert("word doesn't exist");
+				return;
+			}
+
+			for (var i = 0; i < word_length; i++) {
 				var letter_elem = document.getElementById("w" + word_no.toString() + "l" + i.toString());
-				var letter = letter_elem.value;
+				var letter = letter_elem.innerHTML;
 				if (word.indexOf(letter) != -1) {
 					if (word.indexOf(letter) == i) {
 						letter_elem.style.backgroundColor = "green";
@@ -142,12 +246,12 @@
 			}
 
 			var letters = document.getElementsByClassName("letter");
-			for (var i=0; i<letters.length; i++) {
+			for (var i = 0; i < letters.length; i++) {
 				letters[i].disabled = "true";
 			}
 
-			for (var j=0; j<word_length; j++) {
-				document.getElementById("w" + (word_no+1).toString() + "l" + j.toString()).disabled = false;
+			for (var j = 0; j < word_length; j++) {
+				document.getElementById("w" + (word_no + 1).toString() + "l" + j.toString()).disabled = false;
 			}
 		}
 
