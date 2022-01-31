@@ -132,6 +132,8 @@
 			}
 			document.getElementById("game").innerHTML = inputs;
 
+			document.getElementById("w0l0").style.backgroundColor = "lightblue";
+
 			draw_keyboard();
 		}
 		draw_board();
@@ -252,6 +254,11 @@
 				alert("word wwas " + word);
 				return;
 			}
+
+			if (document.getElementById("w" + (current_word-1).toString() + "l" + (word_length-1).toString()).style.backgroundColor == "lightblue")
+				document.getElementById("w" + (current_word-1).toString() + "l" + (word_length-1).toString()).style.background = "none";
+
+			document.getElementById("w" + current_word.toString() + "l0").style.backgroundColor = "lightblue";
 		}
 
 	</script>
