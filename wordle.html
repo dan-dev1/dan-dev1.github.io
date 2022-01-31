@@ -58,6 +58,18 @@
 		}
 	</style>
 	<title>wordle</title>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-H7H5KLYPQ4"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-H7H5KLYPQ4');
+	</script>
+
+
 </head>
 
 <body>
@@ -99,7 +111,7 @@
 			current_word_letter = current_letter % word_length;
 
 			var lets = document.getElementsByClassName("letter");
-			for (var i=0; i<lets.length; i++) {
+			for (var i = 0; i < lets.length; i++) {
 				if (lets[i].style.backgroundColor == "lightblue")
 					lets[i].style.background = "none";
 			}
@@ -179,7 +191,7 @@
 			document.getElementById("back").addEventListener("click", function (e) {
 				document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
 				move_position(-1);
-				
+
 				console.log(current_word, current_word_letter);
 			});
 			document.getElementById("enter").addEventListener("click", function (e) {
@@ -207,7 +219,7 @@
 
 		function find_key(letter) {
 			var lets = document.getElementsByClassName("keyb-let");
-			for (var i=0; i<lets.length; i++) {
+			for (var i = 0; i < lets.length; i++) {
 				if (lets[i].innerHTML.toUpperCase() == letter.toUpperCase()) {
 					return lets[i];
 				}
@@ -255,8 +267,8 @@
 				return;
 			}
 
-			if (document.getElementById("w" + (current_word-1).toString() + "l" + (word_length-1).toString()).style.backgroundColor == "lightblue")
-				document.getElementById("w" + (current_word-1).toString() + "l" + (word_length-1).toString()).style.background = "none";
+			if (document.getElementById("w" + (current_word - 1).toString() + "l" + (word_length - 1).toString()).style.backgroundColor == "lightblue")
+				document.getElementById("w" + (current_word - 1).toString() + "l" + (word_length - 1).toString()).style.background = "none";
 
 			document.getElementById("w" + current_word.toString() + "l0").style.backgroundColor = "lightblue";
 		}
