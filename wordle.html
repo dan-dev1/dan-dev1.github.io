@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		* {
+			font-family: sans-serif;
+		}
+
+		.letter {
+			display: inline-block;
+			padding: 10px;
+			margin: 5px;
+			width: 20px;
+			height: 20px;
+			text-align: center;
+			font-weight: bold;
+			font-size: 14pt;
+			border: 0.5px solid;
+			vertical-align: top;
+		}
+
+		#game {
+			display: block;
+			text-align: center;
+		}
+
+		#keyboard {
+			width: 100%;
+			max-width: 700px;
+			margin: auto;
+		}
+
+		.keyb-tile {
+			display: inline-block;
+			width: 12px;
+			padding: 17px 7px;
+			border: 1px solid grey;
+			vertical-align: middle;
+			margin: 3px;
+			user-select: none;
+			border-radius: 5px;
+		}
+
+		.keyb-row {
+			display: block;
+			text-align: center;
+		}
+
+		.keyb-but {
+			background-color: black;
+			color: white;
+			font-weight: bold;
+			width: 30px;
+		}
+	</style>
+	<title>wordle</title>
+</head>
+
+<body>
+	<h1>wordle</h1>
+	<div id="game"></div>
+	<button onclick="reset()">Reset</button>
+	<div id="keyboard"></div>
+
+	<script src="5letwords.js"></script>
+	<script>
+
+		var word_length = 5;
+		var no_words = 6;
+
+		var current_letter = 0;
+		var current_word = 0;
+		var current_word_letter = 0;
+
+		var word = "";
+
+		function move_position(spaces) {
+			if (current_letter + spaces < 0) {
+				current_letter = 0;
+				current_word = 0;
+				current_word_letter = 0;
+				return;
+			}
+
+			if (current_word_letter + spaces >= word_length) {
+				return;
+			}
+
+			if (current_word_letter + spaces < 0) {
+				return;
+			}
+
+			current_letter += spaces;
+			current_word = Math.floor(current_letter / word_length);
+			current_word_letter = current_letter % word_length;
+		}
+
+		function reset() {
+			current_letter = 0;
+			current_word = 0;
+			current_word_letter = 0;
+
+			choose_word();
+			draw_board();
+			draw_keyboard();
+			move_cursor();
+		}
+
+		function draw_board() {
+			var inputs = "";
+			for (var i = 0; i < no_words; i++) {
+
+				inputs += "<div class='word' id='word" + i.toString() + "'>";
+				for (var j = 0; j < word_length; j++) {
+					inputs += "<div type='text' class='letter' id='w" + i.toString() + "l" + j.toString() + "'></div>";
+				}
+				inputs += "</div>";
+			}
+			document.getElementById("game").innerHTML = inputs;
+
+			draw_keyboard();
+		}
+		draw_board();
+
+		function draw_keyboard() {
+			var retval = "";
+			for (var i = 0; i < keyboard.length; i++) {
+				var row = "<div class='keyb-row'>";
+
+				for (var j = 0; j < keyboard[i].length; j++) {
+
+					if (i == 2 && j == 0 || i == 2 && j == 8) {
+						var type = "";
+						if (j == 0) {
+							type = "back";
+						}
+						else {
+							type = "enter";
+						}
+						row += "<div class='keyb-tile keyb-but' id='" + type + "'>" + keyboard[i][j] + "</div>";
+						continue;
+					}
+					row += "<div class='keyb-tile keyb-let'>" + keyboard[i][j] + "</div>";
+				}
+
+				retval += row + "</div>";
+			}
+
+			document.getElementById("keyboard").innerHTML = retval;
+
+			var lets = document.getElementsByClassName("keyb-let");
+
+			for (var i = 0; i < lets.length; i++) {
+				lets[i].addEventListener("click", function (e) {
+					console.log("setting ", current_word, current_word_letter);
+
+					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = e.target.innerHTML;
+					console.log(e.target.innerHTML, current_word, current_word_letter);
+					move_position(1);
+				});
+			}
+
+			document.getElementById("back").addEventListener("click", function (e) {
+				document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
+				move_position(-1);
+				
+				console.log(current_word, current_word_letter);
+			});
+			document.getElementById("enter").addEventListener("click", function (e) {
+				check_word(current_word);
+			});
+		}
+
+		function choose_word() {
+			var list_items = list.split("\n");
+			word = list_items[Math.floor(Math.random() * list_items.length)].toUpperCase();
+			console.log("word is " + word);
+		}
+		choose_word();
+
+		function word_exists(word_no) {
+			var complete_word = "";
+			for (var i = 0; i < word_length; i++) {
+				complete_word += document.getElementById("w" + word_no.toString() + "l" + i.toString()).innerHTML;
+			}
+			if (list.split("\n").includes(complete_word.toLowerCase())) {
+				return true;
+			}
+			return false;
+		}
+
+		function find_key(letter) {
+			var lets = document.getElementsByClassName("keyb-let");
+			for (var i=0; i<lets.length; i++) {
+				if (lets[i].innerHTML.toUpperCase() == letter.toUpperCase()) {
+					return lets[i];
+				}
+			}
+		}
+
+		function check_word(word_no) {
+
+			if (!word_exists(word_no)) {
+				alert("word doesn't exist");
+				return;
+			}
+
+			current_letter++;
+			current_word++;
+			current_word_letter = 0;
+
+			for (var i = 0; i < word_length; i++) {
+				var letter_elem = document.getElementById("w" + word_no.toString() + "l" + i.toString());
+				var letter = letter_elem.innerHTML;
+				if (word.indexOf(letter) != -1) {
+					if (word.indexOf(letter) == i) {
+						letter_elem.style.backgroundColor = "green";
+						letter_elem.style.color = "white";
+
+						find_key(letter).style.backgroundColor = "green";
+						find_key(letter).style.color = "white";
+					}
+					else {
+						letter_elem.style.backgroundColor = "orange";
+						letter_elem.style.color = "white";
+
+						find_key(letter).style.backgroundColor = "orange";
+						find_key(letter).style.color = "white";
+					}
+				}
+				else {
+					find_key(letter).style.backgroundColor = "grey";
+					find_key(letter).style.color = "white";
+				}
+			}
+
+			if (word_no == no_words - 1) {
+				alert("word wwas " + word);
+				return;
+			}
+		}
+
+	</script>
+
+</body>
+
+</html>
