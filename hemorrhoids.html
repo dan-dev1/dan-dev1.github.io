@@ -165,9 +165,13 @@
 			}
 
 			document.getElementById("back").addEventListener("click", function (e) {
-				document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
-				move_position(-1);
-				
+				if (document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML != "") {
+					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
+				}
+				else {
+					move_position(-1);
+					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
+				}
 				console.log(current_word, current_word_letter);
 			});
 			document.getElementById("enter").addEventListener("click", function (e) {
@@ -195,7 +199,7 @@
 
 		function find_key(letter) {
 			var lets = document.getElementsByClassName("keyb-let");
-			for (var i=0; i<lets.length; i++) {
+			for (var i = 0; i < lets.length; i++) {
 				if (lets[i].innerHTML.toUpperCase() == letter.toUpperCase()) {
 					return lets[i];
 				}
