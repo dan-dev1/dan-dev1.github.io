@@ -159,7 +159,7 @@
 					console.log("setting ", current_word, current_word_letter);
 
 					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = e.target.innerHTML;
-					console.log(e.target.innerHTML, current_word, current_word_letter);
+					// console.log(e.target.innerHTML, current_word, current_word_letter);
 					move_position(1);
 				});
 			}
@@ -172,7 +172,7 @@
 					move_position(-1);
 					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = "";
 				}
-				console.log(current_word, current_word_letter);
+				// console.log(current_word, current_word_letter);
 			});
 			document.getElementById("enter").addEventListener("click", function (e) {
 				check_word(current_word);
@@ -260,7 +260,7 @@
 				var pos = find_char(word_check, guessed_word[i]);
 				if (pos) {
 					if (pos.includes(i)) {
-						console.log("position " + i.toString() + " is green.");
+						// console.log("position " + i.toString() + " is green.");
 
 						letter_elem.style.backgroundColor = "green";
 						letter_elem.style.color = "white";
@@ -269,7 +269,7 @@
 						find_key(letter).style.color = "white";
 					}
 					else {
-						console.log("position " + i.toString() + " is orange.");
+						// console.log("position " + i.toString() + " is orange.");
 
 						letter_elem.style.backgroundColor = "orange";
 						letter_elem.style.color = "white";
@@ -278,7 +278,7 @@
 						find_key(letter).style.color = "white";
 					}
 					word_check = replaceChar(word_check, word_check.indexOf(guessed_word[i]), "*");
-					console.log("Word check: " + word_check);
+					// console.log("Word check: " + word_check);
 				}
 				else {
 					find_key(letter).style.backgroundColor = "grey";
