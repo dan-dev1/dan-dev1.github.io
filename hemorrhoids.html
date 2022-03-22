@@ -206,6 +206,36 @@
 			}
 		}
 
+		function replaceChar (word, index, char) {
+			var retval = "";
+
+			for (var i=0; i<word.length; i++) {
+				if (i != index) {
+					retval += word[i];
+					continue;
+				}
+
+				retval += char;
+			}
+			return retval;
+		}
+
+		function find_char(word, char) {
+			var found = false;
+			var retval = [];
+			for (var i=0; i<word.length; i++) {
+				if (word[i] == char) {
+					retval.push(i);
+					found = true;
+				}
+			}
+
+			if (found) {
+				return retval;
+			}
+			return false;
+		}
+
 		function check_word(word_no) {
 
 			if (!word_exists(word_no)) {
@@ -217,11 +247,21 @@
 			current_word++;
 			current_word_letter = 0;
 
+			var guessed_word = "";
 			for (var i = 0; i < word_length; i++) {
+				guessed_word += document.getElementById("w" + word_no.toString() + "l" + i.toString()).innerHTML;
+			}
+
+			var word_check = word;
+			for (var i=0; i<guessed_word.length; i++) {
 				var letter_elem = document.getElementById("w" + word_no.toString() + "l" + i.toString());
 				var letter = letter_elem.innerHTML;
-				if (word.indexOf(letter) != -1) {
-					if (word.indexOf(letter) == i) {
+
+				var pos = find_char(word_check, guessed_word[i]);
+				if (pos) {
+					if (pos.includes(i)) {
+						console.log("position " + i.toString() + " is green.");
+
 						letter_elem.style.backgroundColor = "green";
 						letter_elem.style.color = "white";
 
@@ -229,10 +269,51 @@
 						find_key(letter).style.color = "white";
 					}
 					else {
+						console.log("position " + i.toString() + " is orange.");
+
 						letter_elem.style.backgroundColor = "orange";
 						letter_elem.style.color = "white";
 
 						find_key(letter).style.backgroundColor = "orange";
+						find_key(letter).style.color = "white";
+					}
+					word_check = replaceChar(word_check, word_check.indexOf(guessed_word[i]), "*");
+					console.log("Word check: " + word_check);
+				}
+				else {
+					find_key(letter).style.backgroundColor = "grey";
+					find_key(letter).style.color = "white";
+				}
+			}
+			/*
+
+			var green_word = word;
+			var orange_word = word;
+
+			for (var i = 0; i < word_length; i++) {
+				var letter_elem = document.getElementById("w" + word_no.toString() + "l" + i.toString());
+				var letter = letter_elem.innerHTML;
+				if (word.indexOf(letter) != -1) {
+					if (green_word.indexOf(letter) == i) {
+						green_word = replaceChar(green_word, i, "-");
+						console.log("GREEN", letter, green_word.indexOf(letter), green_word);
+						letter_elem.style.backgroundColor = "green";
+						letter_elem.style.color = "white";
+
+						find_key(letter).style.backgroundColor = "green";
+						find_key(letter).style.color = "white";
+					}
+					else if (orange_word.indexOf(letter)) {
+						orange_word = replaceChar(orange_word, orange_word.indexOf(letter), "-");
+						console.log("ORANGE", letter, orange_word.indexOf(letter), orange_word);
+						letter_elem.style.backgroundColor = "orange";
+						letter_elem.style.color = "white";
+
+						find_key(letter).style.backgroundColor = "orange";
+						find_key(letter).style.color = "white";
+					}
+					else {
+						find_key(letter).style.backgroundColor = "grey";
 						find_key(letter).style.color = "white";
 					}
 				}
@@ -241,9 +322,15 @@
 					find_key(letter).style.color = "white";
 				}
 			}
+			*/
 
 			if (word_no == no_words - 1) {
 				alert("wword wwas " + word);
+				return;
+			}
+
+			if (guessed_word == word) {
+				alert("OWINFOEINGOING");
 				return;
 			}
 		}
