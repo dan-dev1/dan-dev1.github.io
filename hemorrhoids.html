@@ -185,7 +185,6 @@
 
 			document.addEventListener("keydown", function (e) {
 				if (e.code.toLowerCase().search("key") != -1) {
-					console.log("w" + current_word.toString() + "l" + current_word_letter.toString());
 					document.getElementById("w" + current_word.toString() + "l" + current_word_letter.toString()).innerHTML = e.key.toUpperCase();
 					move_position(1);
 				}
