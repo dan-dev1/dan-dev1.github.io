@@ -195,7 +195,7 @@
 		function draw_app() {
 			var app = "";
 			for (var i = 0; i < n_guesses; i++) {
-				app += "<div class='prev_guess grey_out' id='guess" + i.toString() + "'>" + (i + 1).toString() + "</div>";
+				app += "<div class='prev_guess grey_out' id='guess" + i.toString() + "'>" + guess_secs[i].toString() + " second" + (guess_secs[i] != 1 ? "s" : "") + "</div>";
 			}
 
 			app += "<div id='autocomplete'><input type='text' id='guess_input'></input><div id='autocomp_items'></div></div>";
